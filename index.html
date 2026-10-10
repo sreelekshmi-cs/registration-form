@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #dbeafe, #ede9fe);
+        }
+
+        form {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1,
+        .subtitle {
+            text-align: center;
+        }
+
+        .input-box {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        #eye {
+            position: absolute;
+            right: 10px;
+            top: 12px;
+            cursor: pointer;
+        }
+
+        .password-box input {
+            padding-right: 35px;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4f46e5;
+            color: white;
+            border: 0;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        #successMessage {
+            color: green;
+            text-align: center;
+        }
+
+        @media(max-width:500px) {
+            form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="registerForm">
+        <h1>Create Account</h1>
+        <p class="subtitle">Register to continue</p>
+        <div class="input-box"><label>Name</label><input id="name" placeholder="Enter your name">
+            <oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+            <p id="nameError" class="error"></p>
+        </div>
+        <div class="input-box"><label>Email</label><input id="email" placeholder="Enter your email">
+            <p id="emailError" class="error"></p>
+        </div>
+        <div class="input-box"><label>Password</label>
+            <div class="password-box"><input type="password" id="password" placeholder="Enter password"><span id="eye"
+                    onclick="viewPassword()">👁</span></div>
+            <p id="passwordError" class="error"></p>
+        </div>
+        <button>Register</button>
+        <p id="successMessage"></p>
+    </form>
+    <script>
+         let form = document.getElementById("registerForm");
+        function msg(id, text) { document.getElementById(id).textContent = text; }
+
+        form.onsubmit = function (e) {
+            e.preventDefault();
+            let name = document.getElementById("name").value.trim(), email = document.getElementById("email").value.trim(), pass = document.getElementById("password").value, valid = true;
+            ["nameError", "emailError", "passwordError", "successMessage"].forEach(id => msg(id, ""));
+            if(!/^[a-zA-Z ]+$/.test(name)) { msg("nameError", "Name is required"); valid = false; }
+            if (!email.includes("@") || !email.includes(".")) { msg("emailError", "Enter a valid email"); valid = false; }
+            if (pass.length < 6) { msg("passwordError", "Password needs 6 characters"); valid = false; }
+            if (valid) { msg("successMessage", "Registration successful!"); form.reset(); }
+        };
+        function viewPassword() {
+            let p = document.getElementById("password");
+            p.type = p.type == "password" ? "text" : "password";
+        }
+    </script>
+</body>
+
+</html>
