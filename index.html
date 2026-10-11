@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -16,7 +17,7 @@
             display: grid;
             place-items: center;
             padding: 20px;
-            background: linear-gradient(135deg, #dbeafe, #ede9fe);
+            background: linear-gradient(135deg, honeydew, palegreen);
         }
 
         form {
@@ -25,6 +26,7 @@
             border-radius: 15px;
             width: 100%;
             max-width: 400px;
+            max-width: 750px;
         }
 
         h1,
@@ -41,6 +43,17 @@
             margin-bottom: 6px;
         }
 
+
+        #gender {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
+            border-radius: 7px;
+            border: 1px solid #ccc;
+
+        }
+
         input {
             width: 100%;
             padding: 12px;
@@ -55,7 +68,8 @@
         #eye {
             position: absolute;
             right: 10px;
-            top: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
         }
 
@@ -95,38 +109,157 @@
     <form id="registerForm">
         <h1>Create Account</h1>
         <p class="subtitle">Register to continue</p>
-        <div class="input-box"><label>Name</label><input id="name" placeholder="Enter your name">
-            <oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+        <div class="input-box">
+            <label>Name</label>
+            <input id="name" placeholder="Enter your name" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g, '')">
             <p id="nameError" class="error"></p>
         </div>
         <div class="input-box"><label>Email</label><input id="email" placeholder="Enter your email">
             <p id="emailError" class="error"></p>
         </div>
-        <div class="input-box"><label>Password</label>
-            <div class="password-box"><input type="password" id="password" placeholder="Enter password"><span id="eye"
-                    onclick="viewPassword()">👁</span></div>
+
+
+        <div class="input-box">
+            <label>Phone Number</label>
+
+            <input type="tel" id="phone" placeholder="Enter phone number" maxlength="10"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
+            <p id="phoneError" class="error"></p>
+        </div>
+
+        <div class="input-box">
+            <label>Date of Birth</label>
+            <input type="date" id="dob">
+            <p id="dobError" class="error"></p>
+        </div>
+        <div class="input-box">
+            <label>Gender</label>
+            <select id="gender">
+                <option value="">Select Gender</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Other</option>
+            </select>
+            <p id="genderError" class="error"></p>
+        </div>
+
+
+
+
+
+
+        <div class="input-box">
+            <label>Password</label>
+
+            <div class="password-box">
+                <input type="password" id="password" placeholder="Enter password">
+
+                <span id="eye" onclick="viewPassword()">
+                    <i class="fa-regular fa-eye"></i>
+                </span>
+            </div>
+
             <p id="passwordError" class="error"></p>
+        </div>
+
+        <div class="input-box">
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm password">
+            <p id="confirmError" class="error"></p>
         </div>
         <button>Register</button>
         <p id="successMessage"></p>
     </form>
     <script>
-         let form = document.getElementById("registerForm");
-        function msg(id, text) { document.getElementById(id).textContent = text; }
+        let form = document.getElementById("registerForm");
+
+        function msg(id, text) {
+            document.getElementById(id).textContent = text;
+        }
 
         form.onsubmit = function (e) {
             e.preventDefault();
-            let name = document.getElementById("name").value.trim(), email = document.getElementById("email").value.trim(), pass = document.getElementById("password").value, valid = true;
-            ["nameError", "emailError", "passwordError", "successMessage"].forEach(id => msg(id, ""));
-            if(!/^[a-zA-Z ]+$/.test(name)) { msg("nameError", "Name is required"); valid = false; }
-            if (!email.includes("@") || !email.includes(".")) { msg("emailError", "Enter a valid email"); valid = false; }
-            if (pass.length < 6) { msg("passwordError", "Password needs 6 characters"); valid = false; }
-            if (valid) { msg("successMessage", "Registration successful!"); form.reset(); }
+
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let phone = document.getElementById("phone").value.trim();
+            let dob = document.getElementById("dob").value;
+            let gender = document.getElementById("gender").value;
+            let pass = document.getElementById("password").value;
+            let confirm = document.getElementById("confirmPassword").value;
+            let valid = true;
+
+            ["nameError", "emailError", "phoneError", "passwordError",
+                "confirmError", "dobError", "genderError", "successMessage"]
+                .forEach(id => msg(id, ""));
+
+            if (!/^[a-zA-Z ]+$/.test(name)) {
+                msg("nameError", "Name is required");
+                valid = false;
+            }
+
+            if (!email.includes("@") || !email.includes(".")) {
+                msg("emailError", "Enter a valid email");
+                valid = false;
+            }
+
+            if (!/^[0-9]{10}$/.test(phone)) {
+                msg("phoneError", "Enter a 10 digit phone number");
+                valid = false;
+            }
+
+            if (pass.length < 6) {
+                msg("passwordError", "Password needs 6 characters");
+                valid = false;
+            }
+
+            if (confirm !== pass || confirm === "") {
+                msg("confirmError", "Passwords do not match");
+                valid = false;
+            }
+
+            if (dob === "") {
+                msg("dobError", "Please select your date of birth");
+                valid = false;
+            }
+
+            if (gender === "") {
+                msg("genderError", "Please select your gender");
+                valid = false;
+            }
+
+            if (valid) {
+                msg("successMessage", "Registration successful!");
+                form.reset();
+            }
         };
+
         function viewPassword() {
             let p = document.getElementById("password");
-            p.type = p.type == "password" ? "text" : "password";
+            p.type = p.type === "password" ? "text" : "password";
         }
+
+        let confirmPasswordInput = document.getElementById("confirmPassword");
+
+        confirmPasswordInput.addEventListener("input", function () {
+            let pass = document.getElementById("password").value;
+
+            if (confirmPasswordInput.value !== pass) {
+                msg("confirmError", "Passwords do not match");
+            } else {
+                msg("confirmError", "");
+            }
+        });
+
+        let phoneInput = document.getElementById("phone");
+
+        phoneInput.addEventListener("input", function () {
+            if (phoneInput.value.length < 10) {
+                msg("phoneError", "Phone number must be 10 digits");
+            } else {
+                msg("phoneError", "");
+            }
+        });
     </script>
 </body>
 
